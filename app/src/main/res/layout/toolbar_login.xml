@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.appcompat.widget.Toolbar xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/custom_action_bar_for_signup"
+    android:layout_width="match_parent"
+    android:layout_height="?attr/actionBarSize"
+    android:background="@color/purple_500"
+    app:contentInsetStartWithNavigation="0dp">
+
+    <ImageButton
+        android:id="@+id/backButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        android:background="?attr/colorPrimary"
+        android:contentDescription="Back"
+        android:onClick="onBackButtonClicked"
+        android:src="?attr/homeAsUpIndicator" />
+
+    <TextView
+        android:id="@+id/jjjj"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:fontFamily="sans-serif-medium"
+        android:text="Volunteer of Bangladesh"
+        android:textAlignment="center"
+        android:textColor="@android:color/white"
+        android:textSize="18sp"
+        android:textStyle="bold">
+
+    </TextView>
+</androidx.appcompat.widget.Toolbar>
