@@ -5,6 +5,7 @@ import static com.arif19.vbd.public_url.PublicUrl.rootUrl;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatButton;
+import androidx.appcompat.widget.Toolbar;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
@@ -12,6 +13,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -32,8 +34,12 @@ import org.json.JSONObject;
 public class forgot_pass extends AppCompatActivity {
 
     Button login;
+
     EditText userEmail;
     private ProgressDialog sending;
+    private Toolbar customActionBar; // Use the correct Toolbar class
+    ImageButton backButtonProfile;
+    TextView actionBarTitleProfile;
 
 
 
@@ -41,8 +47,24 @@ public class forgot_pass extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
-        getSupportActionBar().setCustomView(R.layout.toolbar_login);
+        getSupportActionBar().setCustomView(R.layout.toolbar_profile);
         setContentView(R.layout.activity_forgot_pass);
+
+        customActionBar = findViewById(R.id.custom_action_bar_for_profile);
+        actionBarTitleProfile=customActionBar.findViewById(R.id.actionBarTitleProfile);
+        backButtonProfile=customActionBar.findViewById(R.id.backButtonProfile);
+        actionBarTitleProfile.setText("Volunteer of Bangladesh");
+
+
+        backButtonProfile.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(forgot_pass.this, LoginActivity.class);
+                startActivity(intent);
+                // finish();
+            }
+        });
+
 
 
         userEmail=(EditText)findViewById(R.id.userEmail);
