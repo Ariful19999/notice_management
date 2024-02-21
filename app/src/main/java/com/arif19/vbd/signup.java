@@ -236,18 +236,32 @@ public class signup extends AppCompatActivity implements View.OnClickListener {
                     @Override
                     public void onResponse(JSONObject response) {
                         sending.dismiss();
-                        Toast.makeText(signup.this, "Account Created Successfully", Toast.LENGTH_LONG).show();
-                        Intent intent = new Intent(signup.this, LoginActivity.class);
-                        startActivity(intent);
-                        finish();
+
+                        // Handle the response
+                        try {
+                            // Check for success or any specific key in the response
+                            String msg = response.getString("message");
+                            Toast.makeText(signup.this, msg, Toast.LENGTH_LONG).show();
+
+                            // Navigate to the login activity
+                            Intent intent = new Intent(signup.this, LoginActivity.class);
+                            startActivity(intent);
+                            finish();
+
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                            Toast.makeText(signup.this, "Error parsing JSON response", Toast.LENGTH_LONG).show();
+                        }
                     }
                 },
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
+                        // Handle the error response
                         Toast.makeText(signup.this, "Error: " + error.getMessage(), Toast.LENGTH_LONG).show();
                     }
                 });
+
 
         // Add the request to the Volley request queue
         RequestQueue requestQueue = Volley.newRequestQueue(this);

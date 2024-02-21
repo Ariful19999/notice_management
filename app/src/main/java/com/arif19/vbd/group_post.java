@@ -206,10 +206,10 @@ public class group_post extends AppCompatActivity  {
                             if (status.equals("Success")) {
                                 group_name.setText(group_title);
 
-                                if(userRole!="3"){
+                                if(!userRole.equals("3")){
                                     if(!group_admin.equals(userId)){
                                         add_member_all_member.setVisibility(View.GONE);
-//                                        pending_post_layout.setVisibility(View.INVISIBLE);
+                                       // pending_post_layout.setVisibility(View.INVISIBLE);
                                     }
                                 }
 

@@ -41,10 +41,11 @@ import org.json.JSONObject;
 
 public class LoginActivity extends AppCompatActivity implements View.OnClickListener {
 
-    AppCompatButton signup;
-    AppCompatButton login;
+    Button signup;
+    Button login;
     EditText userEmail;
     EditText userPass;
+    TextView forgot_pass;
 
 
 
@@ -72,6 +73,15 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         login= findViewById(R.id.button);
 
         login.setOnClickListener(this);
+
+        forgot_pass=findViewById(R.id.forgot_pass);
+        forgot_pass.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent ii=new Intent(LoginActivity.this,forgot_pass.class);
+                startActivity(ii);
+            }
+        });
 
     }
 
