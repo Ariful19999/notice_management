@@ -170,14 +170,23 @@
             android:hint="Blood Group"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
 
-            <com.google.android.material.textfield.TextInputEditText
+<!--            <com.google.android.material.textfield.TextInputEditText-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:id="@+id/blood_group"-->
+<!--                android:textSize="15sp"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                />-->
+            <AutoCompleteTextView
                 android:layout_width="match_parent"
+                android:padding="10dp"
                 android:id="@+id/blood_group"
-                android:textSize="15sp"
-                android:layout_height="wrap_content"
-                />
+                android:layout_height="50dp">
+            </AutoCompleteTextView>
 
         </com.google.android.material.textfield.TextInputLayout>
+
+
+
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/outlinedTextField12"

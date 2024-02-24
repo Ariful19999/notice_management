@@ -15,6 +15,8 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.util.Base64;
 import android.view.View;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
@@ -58,7 +60,8 @@ public class signup extends AppCompatActivity implements View.OnClickListener {
     EditText pass;
     EditText edu_institute;
     EditText work_institute;
-    EditText blood_group;
+   // EditText blood_group;
+   AutoCompleteTextView blood_group;
     EditText date_of_birth;
     ImageView uploadProfile;
     ImageButton camera;
@@ -115,11 +118,32 @@ public class signup extends AppCompatActivity implements View.OnClickListener {
         pass = (EditText) findViewById(R.id.pass);
         edu_institute = (EditText) findViewById(R.id.edu_institute);
         work_institute = (EditText) findViewById(R.id.work_institute);
-        blood_group = (EditText) findViewById(R.id.blood_group);
+        blood_group = (AutoCompleteTextView) findViewById(R.id.blood_group);
         date_of_birth = (EditText) findViewById(R.id.date_of_birth);
         create_acc=(Button) findViewById(R.id.create_acc);
         uploadProfile= findViewById(R.id.uploadProfile);
         create_acc.setOnClickListener( this);
+
+        ////////// Blood Selected /////////
+
+        String[] blood_nam=getResources().getStringArray(R.array.blood_group);
+        ArrayAdapter<String> adapter_name=new ArrayAdapter<String>(signup.this, android.R.layout.simple_list_item_1,blood_nam);
+        blood_group.setAdapter(adapter_name);
+
+
+
+
+        // Set the current date as the default selected date
+        selectedDate = Calendar.getInstance();
+
+        date_of_birth.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showDatePickerDialog();
+            }
+        });
+
+       // updateSelectedDateText();
 
 
 

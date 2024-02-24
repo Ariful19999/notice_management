@@ -53,6 +53,7 @@ public class service extends AppCompatActivity {
         grid_block.add(new service_modal("User", R.drawable.single_avatar));
         grid_block.add(new service_modal("Potato Disease Detection", R.drawable.detection));
         grid_block.add(new service_modal("Google Map", R.drawable.map));
+        grid_block.add(new service_modal("Rate Us", R.drawable.rating_image));
         grid_block.add(new service_modal("Others", R.drawable.group_avatar));
         service_adapter adapter = new service_adapter(this, grid_block);
         coursesGV.setAdapter(adapter);
@@ -71,6 +72,11 @@ public class service extends AppCompatActivity {
 
                 if(itemName.equals("Google Map")){
                     Intent intent = new Intent(service.this, google_map.class);
+                    startActivity(intent);
+                }
+
+                if(itemName.equals("Rate Us")){
+                    Intent intent = new Intent(service.this, app_rating.class);
                     startActivity(intent);
                 }
 
