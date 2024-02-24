@@ -23,21 +23,30 @@
     <!--        app:layout_constraintWidth_percent="0.5"-->
     <!--        android:contentDescription="VDB Logo" />-->
 
-    <TextView
-        android:id="@+id/f"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:fontFamily="@font/arbutus"
-        android:text="Notice Management"
-        android:textColor="@color/purple_700"
-        android:textSize="24sp"
-        android:textStyle="italic"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.495"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+<!--    <TextView-->
+<!--        android:id="@+id/f"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:fontFamily="@font/arbutus"-->
+<!--        android:text="Notice Management"-->
+<!--        android:textColor="@color/purple_700"-->
+<!--        android:textSize="24sp"-->
+<!--        android:textStyle="italic"-->
+<!--        app:layout_constraintBottom_toBottomOf="parent"-->
+<!--        app:layout_constraintEnd_toEndOf="parent"-->
+<!--        app:layout_constraintHorizontal_bias="0.495"-->
+<!--        app:layout_constraintStart_toStartOf="parent"-->
+<!--        app:layout_constraintTop_toTopOf="parent">-->
 
-    </TextView>
+<!--    </TextView>-->
+    <WebView
+        android:id="@+id/webView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#F2EE9D"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

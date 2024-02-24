@@ -86,7 +86,6 @@ public class PostActivity extends AppCompatActivity {
             actionBar.setDisplayShowTitleEnabled(true); // Disable default title
             actionBar.setBackgroundDrawable(getResources().getDrawable(R.color.white)); // Set background color
 
-
         }
 
         video_btn = findViewById(R.id.video_btn);
@@ -194,6 +193,11 @@ public class PostActivity extends AppCompatActivity {
                             case R.id.action_item_view_group_post:
                                 Intent iiiii = new Intent(PostActivity.this, all_group.class);
                                 startActivity(iiiii);
+                                break;
+
+                            case R.id.btn_service:
+                                Intent iiiiii = new Intent(PostActivity.this, service.class);
+                                startActivity(iiiiii);
                                 break;
                         }
 

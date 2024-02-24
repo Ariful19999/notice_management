@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">VBD</string>
+    <string name="app_name">Notice Management</string>
     <string name="title_activity_login">LogIn</string>
     <string name="prompt_email">Email</string>
     <string name="prompt_password">Password</string>

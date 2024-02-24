@@ -15,7 +15,7 @@
         android:contentDescription="Back"
         android:onClick="onBackButtonClicked"
         android:src="?attr/homeAsUpIndicator"
-        android:visibility="visible" />
+        android:visibility="gone" />
 
     <TextView
         android:id="@+id/jjjj"
@@ -23,7 +23,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:fontFamily="sans-serif-medium"
-        android:text="Volunteer of Bangladesh"
+        android:text="Notice Management"
         android:textAlignment="center"
         android:textColor="@android:color/white"
         android:textSize="18sp"

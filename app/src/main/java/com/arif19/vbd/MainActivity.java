@@ -20,6 +20,11 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.telephony.TelephonyManager;
 import android.util.Log;
+import android.webkit.WebChromeClient;
+import android.webkit.WebResourceRequest;
+import android.webkit.WebSettings;
+import android.webkit.WebView;
+import android.webkit.WebViewClient;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -41,10 +46,13 @@ import org.json.JSONObject;
 
 
 public class MainActivity extends AppCompatActivity {
-    private static final long DELAY_MILLIS = 3000; // 3 seconds
+    private static final long DELAY_MILLIS = 5000; // 3 seconds
 
     private static final int PERMISSION_REQUEST_CODE = 123;
     private ProgressDialog sending;
+
+    private WebView webView;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -58,6 +66,23 @@ public class MainActivity extends AppCompatActivity {
                 //ipInfo();
             }
         }, DELAY_MILLIS);
+
+        webView = findViewById(R.id.webView);
+        WebSettings webSettings = webView.getSettings();
+        webSettings.setJavaScriptEnabled(true);
+
+        webView.setWebViewClient(new WebViewClient() {
+            @Override
+            public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
+                view.loadUrl(request.getUrl().toString());
+                return false;
+            }
+        });
+
+        webView.setWebChromeClient(new WebChromeClient());
+
+        // Load the local HTML file into the WebView
+        webView.loadUrl(rootUrl+"VDB/gsap.html");
 
 
 
@@ -199,7 +224,10 @@ public class MainActivity extends AppCompatActivity {
 //                                Intent intent = new Intent(LoginActivity.this, user_profile.class);
 //                                startActivity(intent);
 
-                                Intent intent = new Intent(MainActivity.this, PostActivity.class);
+//                                Intent intent = new Intent(MainActivity.this, PostActivity.class);
+//                                startActivity(intent);
+
+                                Intent intent = new Intent(MainActivity.this, service.class);
                                 startActivity(intent);
 
                                 finish(); // Optional: finish the current activity if you don't want to come back to it

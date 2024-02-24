@@ -53,7 +53,7 @@ public class forgot_pass extends AppCompatActivity {
         customActionBar = findViewById(R.id.custom_action_bar_for_profile);
         actionBarTitleProfile=customActionBar.findViewById(R.id.actionBarTitleProfile);
         backButtonProfile=customActionBar.findViewById(R.id.backButtonProfile);
-        actionBarTitleProfile.setText("Volunteer of Bangladesh");
+        actionBarTitleProfile.setText("Notice Management");
 
 
         backButtonProfile.setOnClickListener(new View.OnClickListener() {

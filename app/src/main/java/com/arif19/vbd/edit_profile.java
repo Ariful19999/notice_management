@@ -6,6 +6,7 @@ import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
+import android.app.DatePickerDialog;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -15,6 +16,7 @@ import android.provider.MediaStore;
 import android.util.Base64;
 import android.view.View;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -37,7 +39,10 @@ import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 
@@ -57,7 +62,7 @@ public class edit_profile extends AppCompatActivity implements View.OnClickListe
     TextView actionBarTitleProfile;
     ImageButton backButtonProfile;
 
-
+    private Calendar selectedDate;
     String image_id="";
 
 
@@ -110,6 +115,19 @@ public class edit_profile extends AppCompatActivity implements View.OnClickListe
         create_acc=(Button) findViewById(R.id.create_acc);
         uploadProfile= findViewById(R.id.uploadProfile);
         create_acc.setOnClickListener( this);
+
+
+        // Set the current date as the default selected date
+        selectedDate = Calendar.getInstance();
+
+        date_of_birth.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showDatePickerDialog();
+            }
+        });
+
+       // updateSelectedDateText();
 
         setInitialData();
 
@@ -345,5 +363,34 @@ public class edit_profile extends AppCompatActivity implements View.OnClickListe
         // Add the request to the Volley request queue
         RequestQueue requestQueue = Volley.newRequestQueue(this);
         requestQueue.add(jsonObjectRequest);
+    }
+
+    /// date picker
+
+    private void showDatePickerDialog() {
+        DatePickerDialog datePickerDialog = new DatePickerDialog(
+                this,
+                new DatePickerDialog.OnDateSetListener() {
+                    @Override
+                    public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
+                        selectedDate.set(Calendar.YEAR, year);
+                        selectedDate.set(Calendar.MONTH, monthOfYear);
+                        selectedDate.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+
+                        updateSelectedDateText();
+                    }
+                },
+                selectedDate.get(Calendar.YEAR),
+                selectedDate.get(Calendar.MONTH),
+                selectedDate.get(Calendar.DAY_OF_MONTH)
+        );
+
+        datePickerDialog.show();
+    }
+
+    private void updateSelectedDateText() {
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
+        String formattedDate = sdf.format(selectedDate.getTime());
+        date_of_birth.setText(formattedDate);
     }
 }

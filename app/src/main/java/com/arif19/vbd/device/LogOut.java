@@ -29,7 +29,7 @@ public class LogOut {
     public static void destroySaveSession(Activity page) {
 
         if (IMEI.equals("-1")) {
-            Toast.makeText(page, "Unable to Save Session", Toast.LENGTH_LONG).show();
+            Toast.makeText(page, "Unable to Delete Session", Toast.LENGTH_LONG).show();
             return;
         }
 
