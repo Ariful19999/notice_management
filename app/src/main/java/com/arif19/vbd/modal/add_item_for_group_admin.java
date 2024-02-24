@@ -3,7 +3,6 @@ package com.arif19.vbd.modal;
 
 public class add_item_for_group_admin {
     private String adminName;
-
     private String imageUrl;
 
     public add_item_for_group_admin(String adminName, String imageUrl) {

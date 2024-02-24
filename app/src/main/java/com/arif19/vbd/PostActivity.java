@@ -18,6 +18,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.AppCompatButton;
 import androidx.appcompat.widget.Toolbar;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -31,6 +32,7 @@ import com.android.volley.toolbox.Volley;
 import com.arif19.vbd.device.LogOut;
 import com.arif19.vbd.modal.NewsFeedItem;
 import com.arif19.vbd.notification.NotificationUtil;
+import com.arif19.vbd.recycleview.AddGroupMemberAdapter;
 import com.arif19.vbd.recycleview.NewsFeedAdapter;
 import com.arif19.vbd.user.UserId;
 import com.arif19.vbd.user.UserRole;
@@ -57,11 +59,17 @@ public class PostActivity extends AppCompatActivity {
     ImageView messenger_btn;
     ImageView home_btn;
 
+    AppCompatButton show_more;
+
+    /// for pagination post
+
+    int start_page=0;
+    int no_of_rows=3;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_post);
-
 
 
 
@@ -105,6 +113,7 @@ public class PostActivity extends AppCompatActivity {
                 recyclerView.setAdapter(newsFeedAdapter);
 
                 // Fetch data from the API
+                start_page=0;
                 fetchPostData(1);
 
             }
@@ -147,8 +156,50 @@ public class PostActivity extends AppCompatActivity {
         newsFeedAdapter = new NewsFeedAdapter(this, newsFeedItems);
         recyclerView.setAdapter(newsFeedAdapter);
 
+        newsFeedAdapter.setOnLikeDislikeClickListener(new NewsFeedAdapter.OnLikeDislikeClickListener() {
+            @Override
+            public void onLikeDislikeClick(int postId,int like) {
+                // Handle the button click with memberId here
+                // Toast.makeText(PostActivity.this, "Add button clicked for postId: " + postId+" "+ like, Toast.LENGTH_SHORT).show();
+                setLike( like, postId);
+            }
+        });
+
         // Fetch data from the API
         fetchPostData(1);
+
+        show_more=findViewById(R.id.more_post);
+
+        show_more.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                 start_page+=no_of_rows;
+                 show_more.setVisibility(View.GONE);
+                fetchPostData(1);
+            }
+        });
+
+        // Add scroll listener to RecyclerView
+        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+        recyclerView.setLayoutManager(layoutManager);
+        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                int lastVisibleItemPosition = layoutManager.findLastVisibleItemPosition();
+                int totalItemCount = newsFeedAdapter.getItemCount();
+
+                // Check if last visible item is the last item in the list
+                if (lastVisibleItemPosition == totalItemCount-1) {
+                    // Show the "Show More" button
+                    findViewById(R.id.more_post).setVisibility(View.VISIBLE);
+                } else {
+                    // Hide the "Show More" button
+                    findViewById(R.id.more_post).setVisibility(View.GONE);
+                }
+            }
+        });
+
 
     }
 
@@ -215,10 +266,18 @@ public class PostActivity extends AppCompatActivity {
         NewsFeedItem item_val = new NewsFeedItem();
         try {
             // Parse individual attributes from the JSON object
-            String id = item.getString("id");
+            int id = Integer.parseInt(item.getString("id"));
             String post_text = item.getString("post_text");
             String post_date = item.getString("post_date");
             String name = item.getString("name");
+            int total_like = Integer.parseInt(item.getString("total_like"));
+            int post_like = Integer.parseInt(item.getString("post_like"));
+            boolean post_like_up;
+            if(post_like==1){
+                post_like_up=true;
+            }else {
+                post_like_up=false;
+            }
 
             String user_profile = "";
             if (!item.isNull("user_profile")) {
@@ -246,6 +305,11 @@ public class PostActivity extends AppCompatActivity {
             item_val.setVideoUrl(video_url);
             item_val.setPostDate(post_date);
 
+            //// for like and dislike
+            item_val.setActiveLike(post_like_up);
+            item_val.setPostId(id);
+            item_val.setLikeCount(total_like);
+
             // Add the NewsFeedItem to the list
             newsFeedItems.add(item_val);
 
@@ -260,6 +324,8 @@ public class PostActivity extends AppCompatActivity {
     /// finding post
     private void fetchPostData(int actionRole) {
         String userId = UserId.userId;
+        String start_limit = String.valueOf(start_page);
+        String no_of_row = String.valueOf(this.no_of_rows);
         if (userId.equals("0")) {
             return;
         }
@@ -267,6 +333,8 @@ public class PostActivity extends AppCompatActivity {
         JSONObject jsonData = new JSONObject();
         try {
             jsonData.put("userId", userId);
+            jsonData.put("start_limit", start_limit);
+            jsonData.put("no_of_row", no_of_row);
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -287,15 +355,63 @@ public class PostActivity extends AppCompatActivity {
                                         JSONObject item = dataArray.getJSONObject(i);
                                         addDataToPostPage(item);
                                         // Access other properties as needed
+
                                     }
                                 }
                                 if(actionRole==2){
                                     for (int i = 0; i < dataArray.length(); i++) {
                                         JSONObject item = dataArray.getJSONObject(i);
                                         addDataToVideoPage(item);
+
                                         // Access other properties as needed
                                     }
                                 }
+
+                            } else {
+                                Toast.makeText(PostActivity.this, "Something is Wrong!", Toast.LENGTH_LONG).show();
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Toast.makeText(PostActivity.this, "Error: " + error.getMessage(), Toast.LENGTH_LONG).show();
+                    }
+                });
+
+        RequestQueue requestQueue = Volley.newRequestQueue(this);
+        requestQueue.add(jsonObjectRequest);
+    }
+
+    private void setLike(int like,int postId) {
+        String userId = UserId.userId;
+
+        if (userId.equals("0")) {
+            return;
+        }
+
+        JSONObject jsonData = new JSONObject();
+        try {
+            jsonData.put("userId", userId);
+            jsonData.put("like", like);
+            jsonData.put("postId", postId);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        String apiUrl = rootUrl + "VDB/setup_like.php";
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, apiUrl, jsonData,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        try {
+                            String status = response.getString("status");
+
+                            if (status.equals("Success")) {
+
 
                             } else {
                                 Toast.makeText(PostActivity.this, "Something is Wrong!", Toast.LENGTH_LONG).show();

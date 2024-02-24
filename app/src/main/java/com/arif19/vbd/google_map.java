@@ -24,15 +24,18 @@ public class google_map extends AppCompatActivity implements OnMapReadyCallback 
 
         mMapView = findViewById(R.id.mapView);
         mMapView.onCreate(savedInstanceState);
-        mMapView.getMapAsync(this);
+        mMapView.getMapAsync(this); //to register the activity as the callback for when the map is ready.
     }
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
-        LatLng sydney = new LatLng(-34, 151);
-        mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
+
+
+        LatLng institute = new LatLng( 22.4716, 91.7877);
+        mMap.addMarker(new MarkerOptions().position(institute).title("University of Chittagong"));
+
+        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(institute, 15)); // Change the zoom level as needed (15 is just an example)
     }
 
     @Override

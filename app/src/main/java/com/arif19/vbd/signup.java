@@ -14,7 +14,9 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.util.Base64;
+import android.util.Patterns;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
@@ -22,6 +24,7 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -33,9 +36,11 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.arif19.vbd.Config.SignUp;
+import com.arif19.vbd.user.UserId;
 import com.arif19.vbd.user.UserName;
 
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -60,12 +65,18 @@ public class signup extends AppCompatActivity implements View.OnClickListener {
     EditText pass;
     EditText edu_institute;
     EditText work_institute;
-   // EditText blood_group;
-   AutoCompleteTextView blood_group;
+    AutoCompleteTextView blood_group;
     EditText date_of_birth;
     ImageView uploadProfile;
     ImageButton camera;
     private Button create_acc;
+    TextView email_wanning;
+    
+    Spinner semester;
+    String selectedSemester;
+
+
+    Map<String, Integer> emailsMap = new HashMap<>();
 
     private Calendar selectedDate;
 
@@ -122,7 +133,25 @@ public class signup extends AppCompatActivity implements View.OnClickListener {
         date_of_birth = (EditText) findViewById(R.id.date_of_birth);
         create_acc=(Button) findViewById(R.id.create_acc);
         uploadProfile= findViewById(R.id.uploadProfile);
+        email_wanning=findViewById(R.id.email_wanning);
+
         create_acc.setOnClickListener( this);
+
+        semester=findViewById(R.id.semester);
+        // Set an item selected listener to perform actions when an item is selected
+        semester.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parentView, android.view.View selectedItemView, int position, long id) {
+                // Display a toast message with the selected item
+                 selectedSemester = parentView.getItemAtPosition(position).toString();
+//                Toast.makeText(signup.this, "Selected: " + selectedItem, Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parentView) {
+                // Do nothing
+            }
+        });
 
         ////////// Blood Selected /////////
 
@@ -160,6 +189,49 @@ public class signup extends AppCompatActivity implements View.OnClickListener {
 
        // updateSelectedDateText();
 
+        // Validate email when focus changes
+        findUserEmail();
+        email.setOnFocusChangeListener((v, hasFocus) -> {
+            if (!hasFocus) {
+                email_wanning.setVisibility(View.GONE);
+                if(email.getText().toString().equals(""))return;
+
+               boolean rslt= checkEmailExist(email.getText().toString());
+               if(rslt){
+                   email_wanning.setVisibility(View.VISIBLE);
+                   email_wanning.setText("The email you given exist in the database");
+
+               }else {
+                   email_wanning.setVisibility(View.GONE);
+                   boolean validate_rslt= validateEmail(email.getText().toString());
+                   if(!validate_rslt){
+                       email_wanning.setVisibility(View.VISIBLE);
+                       email_wanning.setText("The email you given is not correct");
+                   }else {
+                       email_wanning.setVisibility(View.GONE);
+                   }
+               }
+            }
+        });
+
+
+    }
+
+    private boolean validateEmail(String email) {
+        if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+           return false;
+           // have problem
+        } else {
+            return true;
+        }
+    }
+
+    private boolean checkEmailExist(String email) {
+        if (emailsMap.containsKey(email)) {
+            return true;
+        } else {
+            return false;
+        }
 
     }
 
@@ -248,6 +320,7 @@ public class signup extends AppCompatActivity implements View.OnClickListener {
         String s_work_institute = work_institute.getText().toString().trim();
         String s_blood_group = blood_group.getText().toString().trim();
         String s_date_of_birth = date_of_birth.getText().toString().trim();
+        String s_semester = selectedSemester;
 
 
         if (s_name.equals("") || s_email.equals("") || s_pass.equals("")) {
@@ -268,6 +341,7 @@ public class signup extends AppCompatActivity implements View.OnClickListener {
             jsonData.put("blood_group", s_blood_group);
             jsonData.put("date_of_birth", s_date_of_birth);
             jsonData.put("image_id", image_id);
+            jsonData.put("semester", s_semester);
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -353,5 +427,64 @@ public class signup extends AppCompatActivity implements View.OnClickListener {
         SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
         String formattedDate = sdf.format(selectedDate.getTime());
         date_of_birth.setText(formattedDate);
+    }
+
+    private void findUserEmail() {
+
+        JSONObject jsonData = new JSONObject();
+        try {
+            jsonData.put("user_id", 0);
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+
+        // Define your API URL
+        String apiUrl = rootUrl+"VDB/find_user_email.php";
+
+        // Create a request using Volley
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, apiUrl, jsonData,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+
+                        JSONObject jsonResponse =response;
+                        try {
+                            String status = jsonResponse.getString("status");
+                            String jsonString_all_user_email;
+                            jsonString_all_user_email = response.getString("data");
+                            JSONArray jsonArray = new JSONArray(jsonString_all_user_email);
+
+                            // Iterate over JSONArray and add email addresses to Map
+                            for (int i = 0; i < jsonArray.length(); i++) {
+                                String email = jsonArray.getString(i);
+                                // You can set a default value if needed
+                                emailsMap.put(email, 1);
+                            }
+
+                        }catch (JSONException e) {
+                            e.printStackTrace();
+                            Toast.makeText(signup.this, "Error parsing JSON response", Toast.LENGTH_LONG).show();
+                        }
+
+//                        Intent intent = new Intent(add_group.this, PostActivity.class);
+//                        startActivity(intent);
+//                        finish();
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+
+                        Toast.makeText(signup.this, "Error: " + error.getMessage(), Toast.LENGTH_LONG).show();
+
+                        finish();
+                    }
+                });
+
+        // Add the request to the Volley request queue
+        RequestQueue requestQueue = Volley.newRequestQueue(this);
+        requestQueue.add(jsonObjectRequest);
     }
 }

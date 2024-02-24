@@ -105,6 +105,7 @@
                     android:layout_width="40dp"
                     android:layout_height="30dp"
                     android:layout_marginLeft="10dp"
+                    android:visibility="gone"
                     android:layout_marginTop="5dp"
                     android:background="@color/white"
                     android:src="@drawable/ic_baseline_account_balance_24">
@@ -113,6 +114,7 @@
 
                 <TextView
                     android:layout_width="wrap_content"
+                    android:visibility="gone"
                     android:layout_height="wrap_content"
                     android:text="Works at "
                     android:textColor="@color/black"
@@ -123,6 +125,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:id="@+id/work_institute"
+                    android:visibility="gone"
                     android:textStyle="bold"
                     android:layout_height="wrap_content"
                     android:fontFamily="serif"

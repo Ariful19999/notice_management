@@ -1,18 +1,17 @@
 package com.arif19.vbd.recycleview;
 
-import static com.arif19.vbd.public_url.PublicUrl.rootUrl;
 
 import android.content.Context;
 
 import android.net.Uri;
-import android.transition.Transition;
+
 import android.util.DisplayMetrics;
-import android.util.Log;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
-import android.widget.FrameLayout;
+
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.MediaController;
@@ -20,14 +19,14 @@ import android.widget.TextView;
 import android.widget.VideoView;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AlertDialog;
+
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.arif19.vbd.PostActivity;
 import com.arif19.vbd.R;
-import com.arif19.vbd.modal.NewsFeedItem;
+
+import com.arif19.vbd.modal.NoticeItemModal;
+import com.arif19.vbd.notice;
 import com.bumptech.glide.Glide;
 
 
@@ -35,30 +34,28 @@ import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
-public class NewsFeedAdapter extends RecyclerView.Adapter<NewsFeedAdapter.ViewHolder> {
+public class NoticeAdapter extends RecyclerView.Adapter<NoticeAdapter.ViewHolder> {
 
-    private List<NewsFeedItem> newsFeedItems; // Replace NewsFeedItem with your actual data model
+    private List<NoticeItemModal> noticeItems; // Replace NoticeItemModal with your actual data model
     private Context context;
 
-    private  OnLikeDislikeClickListener onLikeDislikeClickListener; // Add this line
-    
-    public NewsFeedAdapter(Context context, List<NewsFeedItem> newsFeedItems) {
+    public NoticeAdapter(Context context, List<NoticeItemModal> noticeItems) {
         this.context = context;
-        this.newsFeedItems = newsFeedItems;
+        this.noticeItems = noticeItems;
     }
+
 
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_news_feed, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_notice, parent, false);
         return new ViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        // Retrieve the current NewsFeedItem from the list
-        NewsFeedItem currentPost = newsFeedItems.get(position);
-
+        // Retrieve the current NoticeItemModal from the list
+        NoticeItemModal currentPost = noticeItems.get(position);
 
         // Set reporter's name
 
@@ -82,18 +79,6 @@ public class NewsFeedAdapter extends RecyclerView.Adapter<NewsFeedAdapter.ViewHo
             }
         }
 
-        /// set like dislike btn
-
-        if(currentPost.isActiveLike()){
-            holder.disLike.setVisibility(View.VISIBLE);
-            holder.like.setVisibility(View.GONE);
-        }else {
-            holder.disLike.setVisibility(View.GONE);
-            holder.like.setVisibility(View.VISIBLE);
-        }
-
-        /// total like
-        holder.like_count.setText(String.valueOf(currentPost.getLikeCount()));
 
         // set post date
 
@@ -136,7 +121,7 @@ public class NewsFeedAdapter extends RecyclerView.Adapter<NewsFeedAdapter.ViewHo
                 Glide.with(context)
                         .load(imageUrl)
                         //.placeholder(R.drawable.placeholder_image) // Placeholder image
-                       // .error(R.drawable.error_image) // Error image if loading fails
+                        // .error(R.drawable.error_image) // Error image if loading fails
                         .centerCrop()
                         .into(imageView);
 
@@ -204,13 +189,8 @@ public class NewsFeedAdapter extends RecyclerView.Adapter<NewsFeedAdapter.ViewHo
 
     @Override
     public int getItemCount() {
-        return newsFeedItems.size();
+        return noticeItems.size();
     }
-
-    public void setOnLikeDislikeClickListener(OnLikeDislikeClickListener listener) {
-        this.onLikeDislikeClickListener = listener;
-    }
-
 
 
     public  class ViewHolder extends RecyclerView.ViewHolder {
@@ -238,51 +218,6 @@ public class NewsFeedAdapter extends RecyclerView.Adapter<NewsFeedAdapter.ViewHo
             disLike = itemView.findViewById(R.id.dis_like);
             like_count = itemView.findViewById(R.id.like_count);
 
-            like.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    if (getAdapterPosition() != RecyclerView.NO_POSITION &&  onLikeDislikeClickListener != null) {
-                        onLikeDislikeClickListener.onLikeDislikeClick(newsFeedItems.get(getAdapterPosition()).getPostId(),1);
-
-                        // Update the isAdded flag and refresh the adapter
-                        like.setVisibility(View.GONE);
-                        disLike.setVisibility(View.VISIBLE);
-                       // int current_like=newsFeedItems.get(getAdapterPosition()).getLikeCount();
-                        int current_like=Integer.valueOf((String) like_count.getText());
-                        current_like++;
-                        like_count.setText(String.valueOf(current_like));
-
-                       // notifyDataSetChanged();
-                    }
-                }
-            });
-
-            disLike.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    if (getAdapterPosition() != RecyclerView.NO_POSITION &&  onLikeDislikeClickListener != null) {
-                        onLikeDislikeClickListener.onLikeDislikeClick(newsFeedItems.get(getAdapterPosition()).getPostId(),0);
-
-                        // Update the isAdded flag and refresh the adapter
-                        disLike.setVisibility(View.GONE);
-                        like.setVisibility(View.VISIBLE);
-                      //  int current_like=newsFeedItems.get(getAdapterPosition()).getLikeCount();
-                        int current_like=Integer.valueOf((String) like_count.getText());
-                        current_like--;
-                        if(current_like>=0){
-                            like_count.setText(String.valueOf(current_like));
-                        }
-
-//                        if (newsFeedItems.get(getAdapterPosition()).isAdded()){
-//                            newsFeedItems.get(getAdapterPosition()).setAdded(false);
-//                        }else{
-//                            newsFeedItems.get(getAdapterPosition()).setAdded(true);
-//                        }
-
-                       // notifyDataSetChanged();
-                    }
-                }
-            });
         }
     }
     // Method to get the device width
@@ -297,11 +232,5 @@ public class NewsFeedAdapter extends RecyclerView.Adapter<NewsFeedAdapter.ViewHo
 
         return 0; // Return a default value if unable to get the device width
     }
-
-    // Interface for click listener
-    public interface OnLikeDislikeClickListener {
-        void onLikeDislikeClick(int postId,int like);
-    }
-    
 
 }

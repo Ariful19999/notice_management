@@ -57,6 +57,34 @@
 
         </LinearLayout>
 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:orientation="vertical"
+            android:gravity="bottom"
+            android:layout_height="wrap_content">
+
+        </LinearLayout>
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/more_post"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentBottom="true"
+            android:layout_gravity="bottom"
+            android:layout_marginLeft="5dp"
+            android:layout_marginEnd="5dp"
+            android:layout_marginRight="5dp"
+            android:layout_marginBottom="8dp"
+            android:visibility="gone"
+            android:background="@drawable/color_warning"
+            android:text="Show More"
+            android:textAllCaps="false"
+            android:textColor="#fafafa"
+            android:textSize="20sp">
+
+        </androidx.appcompat.widget.AppCompatButton>
+
     </RelativeLayout>
 
 
@@ -64,10 +92,10 @@
     <!-- Sidebar navigation view -->
     <com.google.android.material.navigation.NavigationView
         android:id="@+id/nav_view"
-        android:layout_marginTop="?actionBarSize"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_gravity="start"
+        android:layout_marginTop="?actionBarSize"
         app:headerLayout="@layout/nav_header_main"
         app:menu="@menu/post_menu" />
 </androidx.drawerlayout.widget.DrawerLayout>

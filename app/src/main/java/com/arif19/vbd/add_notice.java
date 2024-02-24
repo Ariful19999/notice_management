@@ -1,20 +1,9 @@
 package com.arif19.vbd;
 
-
 import static com.arif19.vbd.public_url.PublicUrl.rootUrl;
-
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.ActionBar;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 import android.Manifest;
 import android.app.AlertDialog;
-import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -25,17 +14,25 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.util.Base64;
 import android.view.View;
-import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.MediaController;
-import android.widget.ProgressBar;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.VideoView;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -44,10 +41,8 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
-import com.arif19.vbd.Config.SignUp;
 import com.arif19.vbd.user.UserId;
 import com.arif19.vbd.user.UserName;
-import com.squareup.picasso.Picasso;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -67,9 +62,8 @@ import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
-import java.util.concurrent.atomic.AtomicInteger;
 
-public class add_post extends AppCompatActivity {
+public class add_notice extends AppCompatActivity {
 
     private Toolbar customActionBar; // Use the correct Toolbar class
     private ImageButton backButton;
@@ -86,6 +80,8 @@ public class add_post extends AppCompatActivity {
     private ProgressDialog sending_image;
     TextView actionBarTitleProfile;
     String date_time_for_image;
+
+    Spinner semester;
 
 
     private static final int REQUEST_CODE_PICK_VIDEO = 101;
@@ -106,7 +102,7 @@ public class add_post extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
         getSupportActionBar().setCustomView(R.layout.toolbar_profile);
-        setContentView(R.layout.activity_add_post);
+        setContentView(R.layout.activity_add_notoce);
 
         Calendar calendar = Calendar.getInstance();
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
@@ -124,11 +120,15 @@ public class add_post extends AppCompatActivity {
         backButtonProfile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(add_post.this, PostActivity.class);
+                Intent intent = new Intent(add_notice.this, notice.class);
                 startActivity(intent);
-               // finish();
+                // finish();
             }
         });
+
+        semester = (Spinner) findViewById(R.id.semester);
+
+
 
         /// for adding photos
 
@@ -165,7 +165,7 @@ public class add_post extends AppCompatActivity {
         addPost.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                AlertDialog.Builder builder = new AlertDialog.Builder(add_post.this);
+                AlertDialog.Builder builder = new AlertDialog.Builder(add_notice.this);
                 View customLayout = getLayoutInflater().inflate(R.layout.custom_dialog, null);
                 builder.setView(customLayout);
 
@@ -230,7 +230,7 @@ public class add_post extends AppCompatActivity {
                 recyclerView.setAdapter(adapter);
 
                 //// call a function for send image to the server
-                sending_image = ProgressDialog.show(add_post.this, "Please wait...", "Adding Image", false, false);
+                sending_image = ProgressDialog.show(add_notice.this, "Please wait...", "Adding Image", false, false);
 
 
                 sendImageToServer(bitmap,date_time_for_image);
@@ -249,16 +249,16 @@ public class add_post extends AppCompatActivity {
 
             if (selectedVideoUri != null) {
                 // Start the video upload task
-               // new VideoUploadTask().execute(selectedVideoUri);
+                // new VideoUploadTask().execute(selectedVideoUri);
 
-                String videoId=date_time_for_image+UserId.userId;
+                String videoId=date_time_for_image+ UserId.userId;
 
-                sending_video = ProgressDialog.show(add_post.this, "Please wait...", "Adding Video", false, false);
+                sending_video = ProgressDialog.show(add_notice.this, "Please wait...", "Adding Video", false, false);
 
 
                 new VideoUploadTask().execute(videoId, selectedVideoUri.toString());
             } else {
-                Toast.makeText(add_post.this, "Please select a video first.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(add_notice.this, "Please select a video first.", Toast.LENGTH_SHORT).show();
             }
         }
     }
@@ -271,7 +271,7 @@ public class add_post extends AppCompatActivity {
         String postText_S = postText.getText().toString().trim();
         String userId = UserId.userId;
 
-        sending = ProgressDialog.show(add_post.this, "Please wait...", "Adding Post", false, false);
+        sending = ProgressDialog.show(add_notice.this, "Please wait...", "Adding Post", false, false);
 
         // Create a JSONObject to hold the data
         JSONObject jsonData = new JSONObject();
@@ -293,9 +293,9 @@ public class add_post extends AppCompatActivity {
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
-                         sending.dismiss();
-                         //Toast.makeText(add_post.this, "Account Created Successfully", Toast.LENGTH_LONG).show();
-                        Intent intent = new Intent(add_post.this, user_profile.class);
+                        sending.dismiss();
+                        //Toast.makeText(add_notice.this, "Account Created Successfully", Toast.LENGTH_LONG).show();
+                        Intent intent = new Intent(add_notice.this, user_profile.class);
                         startActivity(intent);
                         finish();
 
@@ -305,7 +305,7 @@ public class add_post extends AppCompatActivity {
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         sending.dismiss();
-                        Toast.makeText(add_post.this, "Error: " + error.getMessage(), Toast.LENGTH_LONG).show();
+                        Toast.makeText(add_notice.this, "Error: " + error.getMessage(), Toast.LENGTH_LONG).show();
                     }
                 });
 
@@ -336,8 +336,8 @@ public class add_post extends AppCompatActivity {
                     @Override
                     public void onResponse(JSONObject response) {
 
-                        //Toast.makeText(add_post.this, "Account Created Successfully", Toast.LENGTH_LONG).show();
-//                        Intent intent = new Intent(add_post.this, LoginActivity.class);
+                        //Toast.makeText(add_notice.this, "Account Created Successfully", Toast.LENGTH_LONG).show();
+//                        Intent intent = new Intent(add_notice.this, LoginActivity.class);
 //                        startActivity(intent);
 
                     }
@@ -345,7 +345,7 @@ public class add_post extends AppCompatActivity {
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        Toast.makeText(add_post.this, "Error: " + error.getMessage(), Toast.LENGTH_LONG).show();
+                        Toast.makeText(add_notice.this, "Error: " + error.getMessage(), Toast.LENGTH_LONG).show();
                     }
                 });
 
@@ -371,7 +371,7 @@ public class add_post extends AppCompatActivity {
 
         String requestBody = "image=" + Uri.encode(encodedImage) + "&post_id=" + postId+"&user_id="+ UserId.userId;
 
-        // Toast.makeText(add_post.this, "Post is "+postId, Toast.LENGTH_LONG).show();
+        // Toast.makeText(add_notice.this, "Post is "+postId, Toast.LENGTH_LONG).show();
 
         // Create a request using StringRequest
         StringRequest stringRequest = new StringRequest(Request.Method.POST, apiUrl,
@@ -384,15 +384,15 @@ public class add_post extends AppCompatActivity {
 
                         sending_image.dismiss();
 
-                        // Toast.makeText(add_post.this, message, Toast.LENGTH_LONG).show();
+                        // Toast.makeText(add_notice.this, message, Toast.LENGTH_LONG).show();
                     } catch (JSONException e) {
                         e.printStackTrace();
-                        Toast.makeText(add_post.this, "Error parsing JSON response", Toast.LENGTH_LONG).show();
+                        Toast.makeText(add_notice.this, "Error parsing JSON response", Toast.LENGTH_LONG).show();
                     }
                 },
                 error -> {
                     // sending.dismiss();
-                    Toast.makeText(add_post.this, "Error: " + error.getMessage(), Toast.LENGTH_LONG).show();
+                    Toast.makeText(add_notice.this, "Error: " + error.getMessage(), Toast.LENGTH_LONG).show();
                 }) {
             @Override
             public byte[] getBody() {
@@ -411,7 +411,7 @@ public class add_post extends AppCompatActivity {
         RequestQueue requestQueue = Volley.newRequestQueue(this);
         requestQueue.add(stringRequest);
 
-       // callback.onImageUploadedSuccessfully();
+        // callback.onImageUploadedSuccessfully();
     }
 
 
@@ -448,6 +448,7 @@ public class add_post extends AppCompatActivity {
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == PERMISSION_REQUEST_STORAGE) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 openVideoPicker();
@@ -533,7 +534,7 @@ public class add_post extends AppCompatActivity {
         @Override
         protected void onPostExecute(String result) {
             super.onPostExecute(result);
-            Toast.makeText(add_post.this, result, Toast.LENGTH_SHORT).show();
+            Toast.makeText(add_notice.this, result, Toast.LENGTH_SHORT).show();
         }
     }
 

@@ -2,27 +2,10 @@ package com.arif19.vbd.modal;
 
 import java.util.List;
 
-public class NewsFeedItem {
+public class NoticeItemModal {
     private String reporterName;
     private String postText;
 
-    public int getLikeCount() {
-        return likeCount;
-    }
-
-    public void setLikeCount(int likeCount) {
-        this.likeCount = likeCount;
-    }
-
-    private int likeCount;
-
-    public boolean isActiveLike() {
-        return isActiveLike;
-    }
-
-    public void setActiveLike(boolean activeLike) {
-        isActiveLike = activeLike;
-    }
 
     public int getPostId() {
         return postId;
@@ -32,7 +15,6 @@ public class NewsFeedItem {
         this.postId = postId;
     }
 
-    private boolean isActiveLike;
     private int postId;
 
 

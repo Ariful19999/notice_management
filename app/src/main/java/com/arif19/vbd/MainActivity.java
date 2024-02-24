@@ -207,8 +207,10 @@ public class MainActivity extends AppCompatActivity {
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
-                        sending.dismiss();
+
                         try {
+
+                            sending.dismiss();
                             String status = response.getString("status");
 
                             if (status.equals("Success")) {
@@ -237,6 +239,7 @@ public class MainActivity extends AppCompatActivity {
                                 startActivity(intent);
                             }
                         } catch (JSONException e) {
+                            sending.dismiss();
                             e.printStackTrace();
                         }
                     }
@@ -245,6 +248,7 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         Toast.makeText(MainActivity.this, "Error: " + error.getMessage(), Toast.LENGTH_LONG).show();
+                        sending.dismiss();
                     }
                 });
 
