@@ -165,6 +165,15 @@ public class PostActivity extends AppCompatActivity {
             }
         });
 
+        newsFeedAdapter.setOnCommentListener(new NewsFeedAdapter.OnCommentListener() {
+            @Override
+            public void onCommentListener(int postId) {
+                Intent ii=new Intent(PostActivity.this,unique_post.class);
+                ii.putExtra("postId", postId);
+                startActivity(ii);
+            }
+        });
+
         // Fetch data from the API
         fetchPostData(1);
 

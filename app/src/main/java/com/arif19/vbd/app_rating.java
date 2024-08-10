@@ -26,6 +26,7 @@ import org.json.JSONObject;
 public class app_rating extends AppCompatActivity {
 
     private RatingBar ratingBar;
+    private RatingBar avgRatingBar;
     private AppCompatButton rate_btn;
 
     private ProgressDialog sending;
@@ -36,6 +37,7 @@ public class app_rating extends AppCompatActivity {
         setContentView(R.layout.activity_app_rating);
 
         ratingBar = findViewById(R.id.ratingBar);
+        avgRatingBar = findViewById(R.id.avgRatingBar);
         rate_btn = findViewById(R.id.rate_btn);
         findUserRating();
 
@@ -71,10 +73,12 @@ public class app_rating extends AppCompatActivity {
                         try {
                             String status = jsonResponse.getString("status");
                             float rate = (float) jsonResponse.getDouble("rate");
+                            float avg_rate = (float) jsonResponse.getDouble("avg_rate");
 
                             if(status.equals("success")){
 //                                Toast.makeText(app_rating.this, message, Toast.LENGTH_LONG).show();
                                 ratingBar.setRating(rate);
+                                avgRatingBar.setRating(avg_rate);
                             }
 
                         }catch (JSONException e) {
@@ -142,6 +146,7 @@ public class app_rating extends AppCompatActivity {
                            String message = jsonResponse.getString("message");
 
                            if(status.equals("success")){
+                               findUserRating();
                                Toast.makeText(app_rating.this, message, Toast.LENGTH_LONG).show();
                            }
 

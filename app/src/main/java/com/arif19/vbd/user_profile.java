@@ -94,7 +94,7 @@ public class user_profile extends AppCompatActivity {
             public void onClick(View view) {
                 Intent intent = new Intent(user_profile.this, PostActivity.class);
                 startActivity(intent);
-                // finish();
+                //finish();
             }
         });
 

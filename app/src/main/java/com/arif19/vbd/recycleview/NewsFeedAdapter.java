@@ -41,7 +41,8 @@ public class NewsFeedAdapter extends RecyclerView.Adapter<NewsFeedAdapter.ViewHo
     private Context context;
 
     private  OnLikeDislikeClickListener onLikeDislikeClickListener; // Add this line
-    
+    private  OnCommentListener onCommentListener; // Add this line
+
     public NewsFeedAdapter(Context context, List<NewsFeedItem> newsFeedItems) {
         this.context = context;
         this.newsFeedItems = newsFeedItems;
@@ -211,6 +212,9 @@ public class NewsFeedAdapter extends RecyclerView.Adapter<NewsFeedAdapter.ViewHo
         this.onLikeDislikeClickListener = listener;
     }
 
+    public void setOnCommentListener(OnCommentListener listener) {
+        this.onCommentListener = listener;
+    }
 
 
     public  class ViewHolder extends RecyclerView.ViewHolder {
@@ -223,6 +227,7 @@ public class NewsFeedAdapter extends RecyclerView.Adapter<NewsFeedAdapter.ViewHo
         TextView postDate;
         ImageView like;
         ImageView disLike;
+        ImageView commentBtn;
         CardView postCard;
 
         public ViewHolder(@NonNull View itemView) {
@@ -237,6 +242,7 @@ public class NewsFeedAdapter extends RecyclerView.Adapter<NewsFeedAdapter.ViewHo
             like = itemView.findViewById(R.id.like);
             disLike = itemView.findViewById(R.id.dis_like);
             like_count = itemView.findViewById(R.id.like_count);
+            commentBtn = itemView.findViewById(R.id.commentBtn);
 
             like.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -283,6 +289,16 @@ public class NewsFeedAdapter extends RecyclerView.Adapter<NewsFeedAdapter.ViewHo
                     }
                 }
             });
+
+            commentBtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if (getAdapterPosition() != RecyclerView.NO_POSITION &&  onLikeDislikeClickListener != null) {
+                        onCommentListener.onCommentListener(newsFeedItems.get(getAdapterPosition()).getPostId());
+
+                    }
+                }
+            });
         }
     }
     // Method to get the device width
@@ -302,6 +318,11 @@ public class NewsFeedAdapter extends RecyclerView.Adapter<NewsFeedAdapter.ViewHo
     public interface OnLikeDislikeClickListener {
         void onLikeDislikeClick(int postId,int like);
     }
-    
+
+    // Interface for click listener
+    public interface OnCommentListener {
+        void onCommentListener(int postId);
+    }
+
 
 }

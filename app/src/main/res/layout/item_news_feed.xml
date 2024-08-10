@@ -154,7 +154,7 @@
 
             <ImageView
                 android:layout_width="30dp"
-                android:id="@+id/comment"
+                android:id="@+id/commentBtn"
                 android:layout_marginBottom="10dp"
                 android:layout_height="30dp"
                 android:layout_marginLeft="180dp"
