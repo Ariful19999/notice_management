@@ -51,11 +51,13 @@ public class service extends AppCompatActivity {
         ArrayList<service_modal> grid_block = new ArrayList<service_modal>();
 
         grid_block.add(new service_modal("User", R.drawable.single_avatar));
-        grid_block.add(new service_modal("Potato Disease Detection", R.drawable.detection));
+        grid_block.add(new service_modal("Fruits Detection", R.drawable.detection));
         grid_block.add(new service_modal("Google Map", R.drawable.map));
         grid_block.add(new service_modal("Rate Us", R.drawable.rating_image));
         grid_block.add(new service_modal("YouTube", R.drawable.youtume_img));
         grid_block.add(new service_modal("All Notice", R.drawable.notice));
+        grid_block.add(new service_modal("Sass Application", R.drawable.notice));
+        grid_block.add(new service_modal("Graph QL", R.drawable.graphql));
         grid_block.add(new service_modal("Others", R.drawable.group_avatar));
         service_adapter adapter = new service_adapter(this, grid_block);
         coursesGV.setAdapter(adapter);
@@ -89,6 +91,20 @@ public class service extends AppCompatActivity {
 
                 if(itemName.equals("All Notice")){
                     Intent intent = new Intent(service.this, notice.class);
+                    startActivity(intent);
+                }
+                if(itemName.equals("Fruits Detection")){
+                    Intent intent = new Intent(service.this, real_time_detection.class);
+                    startActivity(intent);
+                }
+
+                if(itemName.equals("Sass Application")){
+                    Intent intent = new Intent(service.this, sass_aplication.class);
+                    startActivity(intent);
+                }
+
+                if(itemName.equals("Graph QL")){
+                    Intent intent = new Intent(service.this, graphql.class);
                     startActivity(intent);
                 }
 
